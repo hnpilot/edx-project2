@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('connect', () => {
         document.querySelector('#create-channel').onclick = () => {
           const channel = document.querySelector('#new-channel').value;
+          document.querySelector('#new-channel').value="";
           socket.emit('create channel', {'name': channel});
         };
         nick=hasNick();
@@ -64,10 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     socket.on('refresh channel', data => {
-        let channel_contents="";
-        console.log(data);
-        console.log(channel);
         if (data.channel==channel) {
+          let channel_contents="<h4>#" + data.channel + "</h4>";
           for (d in data.messages) {
             channel_contents += data.messages[d] + "<br>";
           }
