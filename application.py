@@ -25,8 +25,7 @@ def create_channel(data):
     if name in channels:
         app.logger.info('Channel exists')
     else:
-        app.logger.info('Create channel')
-        channels[name]="Empty so far"
+        channels[name]=[]
         lister=list(channels.keys())
         emit("refresh channels", lister, broadcast=True)
 
@@ -34,3 +33,11 @@ def create_channel(data):
 def get_channels():
     lister=list(channels.keys())
     emit("refresh channels", lister, broadcast=True)
+
+@socketio.on("add message")
+def add_comment(data):
+    channel=data["channel"];
+    message=data["message"];
+    nick=data["nick"];
+    channels[channel].append("@" + nick +": " +message);
+    emit("refresh channel",channels[channel],broadcast=True)

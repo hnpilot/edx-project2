@@ -11,21 +11,17 @@ function hasNick() {
   }
 }
 
-function setNick() {
-  nick = document.querySelector('#nick').value;
-  if (nick.length>3) {
-    localStorage.setItem('nick', nick);
-    document.querySelector("#ask-nick").innerHTML=`<h3>Hello ${nick}!</h3>`;
-    buildChannels();
-  }
-}
-
 function selectChannel(chname) {
-  if (channel != '')
+  if (channel != '' && document.querySelector("#channel-" + channel))
     document.querySelector("#channel-" + channel).style.backgroundColor='#fff';
   localStorage.setItem('channel', chname);
   channel=chname;
-  document.querySelector("#channel-" + chname).style.backgroundColor='#ccc';
+  if (document.querySelector("#channel-" + chname)) {
+    document.querySelector("#channel-" + chname).style.backgroundColor='#ccc';
+  } else {
+    channel="";
+    localStorage.setItem('channel', channel);
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -54,5 +50,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (localStorage.getItem('channel')){
           selectChannel(localStorage.getItem('channel'));
         }
+    });
+
+    document.querySelector('#just-saying-btn').onclick = () => {
+      if (channel!="") {
+        const msg = document.querySelector('#just-saying').value;
+        if (msg.length>0)
+          socket.emit('add message', {'channel': channel,'message' : msg, 'nick': nick});
+      }
+    };
+
+    socket.on('refresh channel', data => {
+        let channel_contents="";
+        for (d in data) {
+          channel_contents += data[d] + "<br>";
+        }
+        document.querySelector("#channel-contents").innerHTML=`${channel_contents}`;
     });
 });
