@@ -12,12 +12,14 @@ function hasNick() {
 }
 
 function selectChannel(chname) {
+  var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
   if (channel != '' && document.querySelector("#channel-" + channel))
     document.querySelector("#channel-" + channel).style.backgroundColor='#fff';
   localStorage.setItem('channel', chname);
   channel=chname;
   if (document.querySelector("#channel-" + chname)) {
     document.querySelector("#channel-" + chname).style.backgroundColor='#ccc';
+    socket.emit('show channel', {'channel': channel});
   } else {
     channel="";
     localStorage.setItem('channel', channel);
@@ -55,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#just-saying-btn').onclick = () => {
       if (channel!="") {
         const msg = document.querySelector('#just-saying').value;
+        document.querySelector('#just-saying').value="";
         if (msg.length>0)
           socket.emit('add message', {'channel': channel,'message' : msg, 'nick': nick});
       }
@@ -62,9 +65,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     socket.on('refresh channel', data => {
         let channel_contents="";
-        for (d in data) {
-          channel_contents += data[d] + "<br>";
-        }
-        document.querySelector("#channel-contents").innerHTML=`${channel_contents}`;
+        console.log(data);
+        console.log(channel);
+        if (data.channel==channel) {
+          for (d in data.messages) {
+            channel_contents += data.messages[d] + "<br>";
+          }
+          document.querySelector("#channel-contents").innerHTML=`${channel_contents}`;
+      }
     });
 });

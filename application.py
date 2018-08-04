@@ -36,8 +36,19 @@ def get_channels():
 
 @socketio.on("add message")
 def add_comment(data):
-    channel=data["channel"];
-    message=data["message"];
-    nick=data["nick"];
-    channels[channel].append("@" + nick +": " +message);
-    emit("refresh channel",channels[channel],broadcast=True)
+    output={}
+    channel=data["channel"]
+    message=data["message"]
+    nick=data["nick"]
+    channels[channel].append("@" + nick +": " +message)
+    output['messages']=channels[channel]
+    output['channel']=channel
+    emit("refresh channel",output,broadcast=True)
+
+@socketio.on("show channel")
+def show_channel(data):
+    output={}
+    app.logger.info(data)
+    output['messages']=channels[data["channel"]]
+    output['channel']=data["channel"]
+    emit("refresh channel",output,broadcast=True)
