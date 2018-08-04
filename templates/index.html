@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+  {% block title %} Welcome! {% endblock %}
+  {% block content %}
+    <div id="ask-nick">
+      <h2>Welcome</h2>
+      You haven't got a nick, please give it here:<br>
+      <input type="text" name="nick"  id="nick" value="" placeholder="Write nick here">
+      <button id="set-nick" class="btn btn-default" onClick="setNick();">Set Nick</button>
+    </div>
+    <div id="flack-window">
+      <row>
+        <div class='col-sm-2'>
+        <h4>Channels</h4>
+        <div id="channel-list" class="flack-channels">
+        </div>
+          <div>
+            <hr><h4>Create channel</h4>
+            <div class="form-group">
+              <input type="text" name="new-channel" value="" class="form-control" id="new-channel" placeholder="channel name">
+            </div>
+            <button id="create-channel" class="btn btn-default">Create</button>
+          </div>
+        </div>
+        <div id="channel-window" class="col-sm-10">
+          <div id="channel-contents" class="col-sm-12 flack-chat">
+          </div>
+          <div id="chatbox" class="col-sm-12">
+            <div class="form-group">
+              <input type="text" name="just-saying" value="" class="form-control" id="just-saying" placeholder="Write your comments here">
+            </div>
+          </div>
+        </div>
+      </row>
+    </div>
+  {% endblock %}
+  {% block ops %}
+    <span id="nick-label"></span>
+  {% endblock %}
