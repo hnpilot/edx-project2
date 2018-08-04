@@ -40,6 +40,9 @@ def add_comment(data):
     channel=data["channel"]
     message=data["message"]
     nick=data["nick"]
+    csize=len(channels[channel])
+    if csize==100:
+            channels[channel].pop(0)
     channels[channel].append("@" + nick +": " +message)
     output['messages']=channels[channel]
     output['channel']=channel
@@ -48,7 +51,6 @@ def add_comment(data):
 @socketio.on("show channel")
 def show_channel(data):
     output={}
-    app.logger.info(data)
     output['messages']=channels[data["channel"]]
     output['channel']=data["channel"]
     emit("refresh channel",output,broadcast=True)
