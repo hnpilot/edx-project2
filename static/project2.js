@@ -1,4 +1,5 @@
 var nick="";
+var channel="";
 var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
 function hasNick() {
@@ -19,6 +20,13 @@ function setNick() {
   }
 }
 
+function selectChannel(chname) {
+  if (channel != '')
+    document.querySelector("#channel-" + channel).style.backgroundColor='#fff';
+  localStorage.setItem('channel', chname);
+  channel=chname;
+  document.querySelector("#channel-" + chname).style.backgroundColor='#ccc';
+}
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -40,8 +48,11 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('refresh channels', data => {
         let channel_list="";
         for (d in data) {
-          channel_list = channel_list + "#" + data[d] + "<br>";
+          channel_list = channel_list + "<span class='channel-links' id='channel-" + data[d] + "'' onClick=\"selectChannel('" + data[d]  + "')\";>#" + data[d] + "</span><br>";
         }
         document.querySelector("#channel-list").innerHTML=`<div class="channel-list">${channel_list}</div>`;
+        if (localStorage.getItem('channel')){
+          selectChannel(localStorage.getItem('channel'));
+        }
     });
 });

@@ -21,7 +21,7 @@ def index():
 
 @socketio.on("create channel")
 def create_channel(data):
-    name=data["name"]
+    name=data["name"].replace(' ', '-')
     if name in channels:
         app.logger.info('Channel exists')
     else:
@@ -32,6 +32,5 @@ def create_channel(data):
 
 @socketio.on("get channels")
 def get_channels():
-    app.logger.info('Getting channels first')
     lister=list(channels.keys())
     emit("refresh channels", lister, broadcast=True)
